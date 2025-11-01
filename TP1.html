@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Attendance System</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* --- NAVBAR STYLING --- */
+    nav {
+      background-color: #007bff;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .nav-links li:hover {
+      text-decoration: underline;
+      color: #dce9ff;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      border: none;
+      padding: 8px 15px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .logout-btn:hover {
+      background-color: #a71d2a;
+    }
+
+    /* --- SECTION STYLING --- */
+    section {
+      padding: 30px;
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #333;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #e9ecef;
+    }
+
+    input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    /* Delete button style */
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: #a71d2a;
+    }
+
+    /* Form styles */
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    #message {
+      color: green;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    /* Reports placeholder */
+    .report-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ NAVIGATION BAR -->
+  <nav>
+    <div class="logo"><strong>Attendance System</strong></div>
+    <ul class="nav-links">
+      <li onclick="showSection('home')">Home</li>
+      <li onclick="showSection('attendance')">Attendance List</li>
+      <li onclick="showSection('addStudent')">Add Student</li>
+      <li onclick="showSection('reports')">Reports</li>
+    </ul>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </nav>
+
+  <!-- 🏠 HOME SECTION -->
+  <section id="home" class="active">
+    <h2>Welcome to the Student Attendance System</h2>
+    <p>Use the navigation bar to manage students, mark attendance, and view reports.</p>
+  </section>
+
+  <!-- ➕ ADD STUDENT SECTION -->
+  <section id="addStudent">
+    <h2>Add New Student</h2>
+
+    <form id="studentForm">
+      <label for="studentId">Student ID:</label>
+      <input type="text" id="studentId" required />
+
+      <label for="lastName">Last Name:</label>
+      <input type="text" id="lastName" required />
+
+      <label for="firstName">First Name:</label>
+      <input type="text" id="firstName" required />
+
+      <label for="email">Course / Email:</label>
+      <input type="email" id="email" required />
+
+      <button type="submit">Add Student</button>
+    </form>
+
+    <p id="message"></p>
+  </section>
+
+  <!-- 📋 ATTENDANCE LIST SECTION -->
+  <section id="attendance">
+    <h2>Student Attendance Table</h2>
+
+    <form id="attendanceForm">
+      <table id="attendanceTable">
+        <tr>
+          <th>Student ID</th>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th>Course</th>
+          <th>Present</th>
+          <th>Participated</th>
+          <th>Actions</th>
+        </tr>
+
+        <tr>
+          <td>232331337210</td>
+          <td>Djouahra</td>
+          <td>Mohamed Aimen</td>
+          <td>Computer Science</td>
+          <td><input type="checkbox" /></td>
+          <td><input type="checkbox" /></td>
+          <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+        </tr>
+        <tr>
+          <td>232331337211</td>
+          <td>Elfiad</td>
+          <td>Samy</td>
+          <td>Information Systems</td>
+          <td><input type="checkbox" /></td>
+          <td><input type="checkbox" /></td>
+          <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+        </tr>
+      </table>
+
+      <button type="submit">Save Attendance</button>
+    </form>
+  </section>
+
+  <!-- 📊 REPORTS SECTION -->
+  <section id="reports">
+    <h2>Reports</h2>
+    <div class="report-box">
+      <p>This section will display attendance statistics and summaries (coming soon).</p>
+    </div>
+  </section>
+
+  <script>
+    // --- NAVIGATION FUNCTION ---
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(sec => sec.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    // --- LOGOUT FUNCTION ---
+    function logout() {
+      if (confirm("Are you sure you want to logout?")) {
+        alert("You have been logged out.");
+        showSection('home');
+      }
+    }
+
+    // --- DELETE FUNCTION ---
+    function deleteRow(button) {
+      const row = button.closest("tr");
+      const studentName = row.cells[2].textContent;
+      if (confirm(`Are you sure you want to delete ${studentName}?`)) {
+        row.remove();
+      }
+    }
+
+    // --- ADD STUDENT FUNCTION ---
+    const studentForm = document.getElementById("studentForm");
+    const table = document.getElementById("attendanceTable");
+    const message = document.getElementById("message");
+
+    studentForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const studentId = document.getElementById("studentId").value;
+      const lastName = document.getElementById("lastName").value;
+      const firstName = document.getElementById("firstName").value;
+      const email = document.getElementById("email").value;
+
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${studentId}</td>
+        <td>${lastName}</td>
+        <td>${firstName}</td>
+        <td>${email}</td>
+        <td><input type="checkbox" /></td>
+        <td><input type="checkbox" /></td>
+        <td><button type="button" class="delete-btn" onclick="deleteRow(this)">Delete</button></td>
+      `;
+
+      table.appendChild(newRow);
+      message.textContent = `Student ${firstName} ${lastName} (ID: ${studentId}) added successfully!`;
+
+      studentForm.reset();
+    });
+
+    // --- SAVE ATTENDANCE ---
+    document.getElementById("attendanceForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      alert("Attendance saved successfully!");
+    });
+  </script>
+</body>
+</html>

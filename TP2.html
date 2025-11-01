@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Attendance System - TP2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* NAVBAR */
+    nav {
+      background-color: #007bff;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .nav-links li:hover {
+      text-decoration: underline;
+      color: #dce9ff;
+    }
+
+    .logout-btn {
+      background-color: #dc3545;
+      border: none;
+      padding: 8px 15px;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    section {
+      padding: 30px;
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    form {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"], input[type="email"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9em;
+    }
+
+    /* Row colors */
+    .good { background-color: #b7f0b1 !important; }
+    .warning { background-color: #fff6b3 !important; }
+    .bad { background-color: #ffb3b3 !important; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div><strong>Attendance System</strong></div>
+    <ul class="nav-links">
+      <li onclick="showSection('home')">Home</li>
+      <li onclick="showSection('attendance')">Attendance List</li>
+      <li onclick="showSection('addStudent')">Add Student</li>
+      <li onclick="showSection('reports')">Reports</li>
+    </ul>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </nav>
+
+  <!-- HOME -->
+  <section id="home" class="active">
+    <h2>Welcome to the Attendance System - TP2</h2>
+    <p>Enhanced version with interactive attendance and validation.</p>
+  </section>
+
+  <!-- ADD STUDENT -->
+  <section id="addStudent">
+    <h2>Add New Student</h2>
+    <form id="studentForm">
+      <label>Student ID:</label>
+      <input type="text" id="studentId" />
+      <span class="error" id="idError"></span>
+
+      <label>Last Name:</label>
+      <input type="text" id="lastName" />
+      <span class="error" id="lastNameError"></span>
+
+      <label>First Name:</label>
+      <input type="text" id="firstName" />
+      <span class="error" id="firstNameError"></span>
+
+      <label>Email:</label>
+      <input type="email" id="email" />
+      <span class="error" id="emailError"></span>
+
+      <button type="submit">Add Student</button>
+    </form>
+  </section>
+
+  <!-- ATTENDANCE TABLE -->
+  <section id="attendance">
+    <h2>Student Attendance Table</h2>
+    <table id="attendanceTable">
+      <tr>
+        <th>Last Name</th>
+        <th>First Name</th>
+        <th colspan="6">Sessions (S1–S6)</th>
+        <th colspan="6">Participation (P1–P6)</th>
+        <th>Absences</th><th>Participation</th><th>Message</th>
+      </tr>
+
+      <tr>
+        <td>Ahmed</td><td>Sara</td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td></td><td></td><td></td>
+      </tr>
+
+      <tr>
+        <td>Yacine</td><td>Ali</td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td></td><td></td><td></td>
+      </tr>
+
+      <tr>
+        <td>Hocine</td><td>Rania</td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox"></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox"></td><td><input type="checkbox"></td>
+        <td><input type="checkbox"></td><td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="checkbox"></td>
+        <td></td><td></td><td></td>
+      </tr>
+    </table>
+
+    <button onclick="evaluateAttendance()">Evaluate Attendance</button>
+  </section>
+
+  <!-- REPORTS -->
+  <section id="reports">
+    <h2>Reports</h2>
+    <p>Attendance analysis and participation summaries will appear here.</p>
+  </section>
+
+  <script>
+    // --- NAVIGATION ---
+    function showSection(id) {
+      document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    function logout() {
+      alert("Logged out successfully!");
+      showSection('home');
+    }
+
+
+// === Utility validation functions ===
+function validateStudentId() {
+  const id = document.getElementById("studentId").value.trim();
+  const error = document.getElementById("idError");
+  error.textContent = "";
+
+  if (id === "") {
+    error.textContent = "Student ID cannot be empty.";
+    return false;
+  } else if (!/^[0-9]+$/.test(id)) {
+    error.textContent = "Student ID must contain only numbers.";
+    return false;
+  }
+  return true;
+}
+
+function validateLastName() {
+  const lastName = document.getElementById("lastName").value.trim();
+  const error = document.getElementById("lastNameError");
+  error.textContent = "";
+
+  if (lastName === "") {
+    error.textContent = "Last name cannot be empty.";
+    return false;
+  } else if (!/^[A-Za-z\s]+$/.test(lastName)) {
+    error.textContent = "Last name must contain only letters.";
+    return false;
+  }
+  return true;
+}
+
+function validateFirstName() {
+  const firstName = document.getElementById("firstName").value.trim();
+  const error = document.getElementById("firstNameError");
+  error.textContent = "";
+
+  if (firstName === "") {
+    error.textContent = "First name cannot be empty.";
+    return false;
+  } else if (!/^[A-Za-z\s]+$/.test(firstName)) {
+    error.textContent = "First name must contain only letters.";
+    return false;
+  }
+  return true;
+}
+
+function validateEmail() {
+  const email = document.getElementById("email").value.trim();
+  const error = document.getElementById("emailError");
+  error.textContent = "";
+
+  if (email === "") {
+    error.textContent = "Email cannot be empty.";
+    return false;
+  } else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    error.textContent = "Enter a valid email address.";
+    return false;
+  }
+  return true;
+}
+
+// === Real-time validation (on blur) ===
+document.getElementById("studentId").addEventListener("blur", validateStudentId);
+document.getElementById("lastName").addEventListener("blur", validateLastName);
+document.getElementById("firstName").addEventListener("blur", validateFirstName);
+document.getElementById("email").addEventListener("blur", validateEmail);
+
+// === On form submit ===
+document.getElementById("studentForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const valid =
+    validateStudentId() &
+    validateLastName() &
+    validateFirstName() &
+    validateEmail();
+
+  if (valid) {
+    const id = document.getElementById("studentId").value.trim();
+    const lastName = document.getElementById("lastName").value.trim();
+    const firstName = document.getElementById("firstName").value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    const table = document.getElementById("attendanceTable");
+    const newRow = table.insertRow(-1);
+
+    newRow.insertCell(0).textContent = lastName;
+    newRow.insertCell(1).textContent = firstName;
+
+    // Add 6 attendance checkboxes
+    for (let i = 0; i < 6; i++) {
+      const cell = newRow.insertCell(-1);
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      cell.appendChild(checkbox);
+    }
+
+    // Add 6 participation checkboxes
+    for (let i = 0; i < 6; i++) {
+      const cell = newRow.insertCell(-1);
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      cell.appendChild(checkbox);
+    }
+
+    // Add Absences, Participation, and Message columns
+    newRow.insertCell(-1).textContent = "";
+    newRow.insertCell(-1).textContent = "";
+    newRow.insertCell(-1).textContent = "";
+
+    alert("✅ Student added successfully!");
+    this.reset();
+
+    // Clear any previous error messages
+    document.querySelectorAll(".error").forEach(e => e.textContent = "");
+  }
+});
+
+
+  </script>
+</body>
+</html>
