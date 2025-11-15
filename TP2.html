@@ -7,29 +7,31 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  body { font-family: Arial, sans-serif; margin:0; background:#f8f9fa; }
-  nav { background:#007bff; color:#fff; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
-  .nav-links { list-style:none; display:flex; gap:20px; margin:0; padding:0; }
-  .nav-links li { cursor:pointer; font-weight:bold; }
-  .nav-links li:hover { text-decoration:underline; color:#dce9ff; }
-  .logout-btn { background:#dc3545; border:none; padding:8px 15px; border-radius:5px; color:#fff; cursor:pointer; font-weight:bold; }
-  section { padding:30px; display:none; }
-  section.active { display:block; }
-  table { width:100%; border-collapse:collapse; margin-top:20px; background:#fff; }
-  th,td { border:1px solid #333; padding:8px; text-align:center; }
-  th { background:#007bff; color:white; }
-  .good { background-color:#b7f0b1 !important; }
-  .warning { background-color:#fff6b3 !important; }
-  .bad { background-color:#ffb3b3 !important; }
-  .delete-btn { background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; }
-  .delete-btn:hover { background:#b02a37; }
-  form { background:white; padding:20px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); max-width:400px; }
-  label { display:block; margin-top:10px; font-weight:bold; }
-  input[type=text],input[type=email]{ width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
-  .error { color:red; font-size:0.9em; }
-  button { margin-top:15px; padding:10px 20px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer; }
-  button:hover { background:#0056b3; }
-  #reportContainer { max-width:600px; margin:auto; background:white; border-radius:10px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.1); text-align:center; }
+body { font-family: Arial, sans-serif; margin:0; background:#f8f9fa; }
+nav { background:#007bff; color:#fff; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; }
+.nav-links { list-style:none; display:flex; gap:20px; margin:0; padding:0; }
+.nav-links li { cursor:pointer; font-weight:bold; }
+.nav-links li:hover { text-decoration:underline; color:#dce9ff; }
+.logout-btn { background:#dc3545; border:none; padding:8px 15px; border-radius:5px; color:#fff; cursor:pointer; font-weight:bold; }
+section { padding:30px; display:none; }
+section.active { display:block; }
+table { width:100%; border-collapse:collapse; margin-top:20px; background:#fff; }
+th,td { border:1px solid #333; padding:8px; text-align:center; }
+th { background:#007bff; color:white; }
+.good { background-color:#b7f0b1 !important; }
+.warning { background-color:#fff6b3 !important; }
+.bad { background-color:#ffb3b3 !important; }
+.delete-btn { background:#dc3545; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; }
+.delete-btn:hover { background:#b02a37; }
+form { background:white; padding:20px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.1); max-width:400px; }
+label { display:block; margin-top:10px; font-weight:bold; }
+input[type=text],input[type=email]{ width:100%; padding:8px; margin-top:5px; border:1px solid #ccc; border-radius:5px; }
+.error { color:red; font-size:0.9em; }
+button { margin-top:15px; padding:10px 20px; background:#007bff; color:white; border:none; border-radius:5px; cursor:pointer; }
+button:hover { background:#0056b3; }
+#reportContainer { max-width:600px; margin:auto; background:white; border-radius:10px; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.1); text-align:center; }
+#searchInput { padding: 8px; margin-top: 5px; width: 250px; }
+#sortStatus { margin-top: 15px; font-style: italic; color: #555; }
 </style>
 </head>
 <body>
@@ -40,68 +42,79 @@
     <li onclick="showSection('home')">Home</li>
     <li onclick="showSection('attendance')">Attendance List</li>
     <li onclick="showSection('addStudent')">Add Student</li>
-    <li onclick="showSection('reports')">Reports</li>
+    <li onclick="showReport()">Reports</li>
   </ul>
   <button class="logout-btn" onclick="logout()">Logout</button>
 </nav>
 
-<!-- HOME -->
 <section id="home" class="active">
   <h2>Welcome to the Student Attendance System</h2>
   <p>This system lets teachers track attendance and participation, evaluate students, and generate visual reports easily.</p>
 </section>
 
-<!-- ATTENDANCE -->
 <section id="attendance">
   <h2>Attendance Table</h2>
+
+  <label for="searchInput"><b>Search by Name:</b></label>
+  <input type="text" id="searchInput" placeholder="Type a name to filter...">
+
   <table id="attendanceTable">
-    <tr>
-      <th>Last Name</th><th>First Name</th>
-      <th colspan="6">Sessions (S1–S6)</th>
-      <th colspan="6">Participation (P1–P6)</th>
-      <th>Absences</th><th>Participation</th><th>Message</th><th>Action</th>
-    </tr>
-    <tr>
-      <td>Ahmed</td><td>Sara</td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox"></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox"></td>
-      <td></td><td></td><td></td>
-      <td><button class="delete-btn">Delete</button></td>
-    </tr>
-    <tr>
-      <td>Yacine</td><td>Ali</td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
-      <td></td><td></td><td></td>
-      <td><button class="delete-btn">Delete</button></td>
-    </tr>
-    <tr>
-      <td>Hocine</td><td>Rania</td>
-      <td><input type="checkbox" checked></td><td><input type="checkbox"></td>
-      <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox"></td><td><input type="checkbox"></td>
-      <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
-      <td><input type="checkbox"></td><td><input type="checkbox"></td>
-      <td><input type="checkbox"></td><td><input type="checkbox"></td>
-      <td></td><td></td><td></td>
-      <td><button class="delete-btn">Delete</button></td>
-    </tr>
+    <thead>
+      <tr>
+        <th>Last Name</th><th>First Name</th>
+        <th colspan="6">Sessions (S1–S6)</th>
+        <th colspan="6">Participation (P1–P6)</th>
+        <th>Absences</th><th>Participation</th><th>Message</th><th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Ahmed</td><td>Sara</td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td></td><td></td><td></td>
+        <td><button class="delete-btn">Delete</button></td>
+      </tr>
+      <tr>
+        <td>Yacine</td><td>Ali</td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox" checked></td>
+        <td></td><td></td><td></td>
+        <td><button class="delete-btn">Delete</button></td>
+      </tr>
+      <tr>
+        <td>Hocine</td><td>Rania</td>
+        <td><input type="checkbox" checked></td><td><input type="checkbox"></td>
+        <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox"></td><td><input type="checkbox"></td>
+        <td><input type="checkbox"></td><td><input type="checkbox" checked></td>
+        <td><input type="checkbox"></td><td><input type="checkbox"></td>
+        <td><input type="checkbox"></td><td><input type="checkbox"></td>
+        <td></td><td></td><td></td>
+        <td><button class="delete-btn">Delete</button></td>
+      </tr>
+  </tbody>
   </table>
+  <br>
   <button onclick="evaluateAttendance()">Evaluate Attendance</button>
   <button onclick="showReport()">Show Report</button>
   <button id="highlightBtn">Highlight Excellent Students</button>
   <button id="resetBtn">Reset Colors</button>
+
+  <button id="sortAbsence">Sort by Absences (Ascending)</button>
+  <button id="sortParticipation">Sort by Participation (Descending)</button>
+
+  <div id="sortStatus"></div>
 </section>
 
-<!-- ADD STUDENT -->
 <section id="addStudent">
   <h2>Add New Student</h2>
   <form id="studentForm">
@@ -125,7 +138,6 @@
   </form>
 </section>
 
-<!-- REPORTS -->
 <section id="reports">
   <h2>Attendance Report</h2>
   <div id="reportContainer">
@@ -147,7 +159,7 @@ function logout(){ alert("Logged out successfully!"); showSection("home"); }
 
 // --- Attendance Evaluation ---
 function evaluateAttendance(){
-  $("#attendanceTable tr:not(:first)").each(function(){
+  $("#attendanceTable tbody tr").each(function(){ 
     const boxes=$(this).find("input[type='checkbox']");
     const sessions=boxes.slice(0,6);
     const parts=boxes.slice(6,12);
@@ -191,7 +203,7 @@ $("#studentForm").on("submit", function(e){
       <td></td><td></td><td></td>
       <td><button class="delete-btn">Delete</button></td>
     </tr>`;
-  $("#attendanceTable").append(newRow);
+  $("#attendanceTable tbody").append(newRow); 
   alert("Student added successfully!");
   this.reset();
   showSection("attendance");
@@ -203,7 +215,7 @@ $(document).on("click",".delete-btn",function(){ if(confirm("Delete this student
 // --- Report Chart ---
 function showReport() {
   showSection("reports");
-  const rows = $("#attendanceTable tr:not(:first)");
+  const rows = $("#attendanceTable tbody tr"); 
   const total = rows.length;
   let totalAttendance = 0;
   let totalParticipation = 0;
@@ -212,13 +224,12 @@ function showReport() {
     const boxes = $(this).find("input[type='checkbox']");
     const sessions = boxes.slice(0, 6);
     const parts = boxes.slice(6, 12);
-
-    totalAttendance += sessions.filter(":checked").length / sessions.length;
-    totalParticipation += parts.filter(":checked").length / parts.length;
+    totalAttendance += sessions.length > 0 ? sessions.filter(":checked").length / sessions.length : 0;
+    totalParticipation += parts.length > 0 ? parts.filter(":checked").length / parts.length : 0;
   });
 
-  const attendancePercent = (totalAttendance / total) * 100;
-  const participationPercent = (totalParticipation / total) * 100;
+  const attendancePercent = total > 0 ? (totalAttendance / total) * 100 : 0;
+  const participationPercent = total > 0 ? (totalParticipation / total) * 100 : 0;
   const avgRate = (attendancePercent + participationPercent) / 2;
 
   $("#totalStudents").text(total);
@@ -242,43 +253,34 @@ function showReport() {
     options: { responsive: true, scales: { y: { beginAtZero: true } } }
   });
 
+  // --- Doughnut Chart ---
   const ctx2 = document.getElementById("successChart").getContext("2d");
-if (window.successChart) window.successChart.destroy();
-window.successChart = new Chart(ctx2, {
-  type: "doughnut",
-  data: {
-    labels: ["Success", "Remaining"],
-    datasets: [{
-      data: [avgRate, 100 - avgRate],
-      backgroundColor: ["#28a745", "#ff4d4f"], // green for success, red for remaining
-      borderColor: "#fff",
-      borderWidth: 2
-    }]
-  },
-  options: {
-    cutout: "50%", // smaller cutout to make the doughnut thicker
-    plugins: {
-      legend: { display: false },
-      tooltip: { enabled: true },
-      datalabels: {
-        display: true,
-        color: '#000',
-        formatter: function(value, context) {
-          return context.chart.data.datasets[0].data[0].toFixed(1) + '%';
-        },
-        font: { size: 18, weight: 'bold' },
-        anchor: 'center',
-        align: 'center'
+  if (window.successChart) window.successChart.destroy();
+  window.successChart = new Chart(ctx2, {
+    type: "doughnut",
+    data: {
+      labels: ["Success", "Remaining"],
+      datasets: [{
+        data: [avgRate, 100 - avgRate],
+        backgroundColor: ["#28a745", "#ff4d4f"], 
+        borderColor: "#fff",
+        borderWidth: 2
+      }]
+    },
+    options: {
+      cutout: "50%", 
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { enabled: true }
       }
     }
-  },
-  plugins: [ChartDataLabels] // make sure you include ChartDataLabels plugin for the label
-});
+  });
 }
 // --- Hover + Click ---
-$("#attendanceTable").on("mouseenter","tr:not(:first)",function(){ $(this).css("background-color","#e3f2fd"); })
-.on("mouseleave","tr:not(:first)",function(){ $(this).css("background-color",""); })
-.on("click","tr:not(:first)",function(e){
+$("#attendanceTable tbody").on("mouseenter","tr",function(){ $(this).css("background-color","#e3f2fd"); }) 
+.on("mouseleave","tr",function(){ $(this).css("background-color",""); })
+.on("click","tr",function(e){
   if($(e.target).is("input,button")) return;
   const last=$(this).find("td").eq(0).text();
   const first=$(this).find("td").eq(1).text();
@@ -288,7 +290,7 @@ $("#attendanceTable").on("mouseenter","tr:not(:first)",function(){ $(this).css("
 
 // --- Highlight Excellent Students ---
 $("#highlightBtn").click(function(){
-  $("#attendanceTable tr:not(:first)").each(function(){
+  $("#attendanceTable tbody tr").each(function(){ 
     const absText=$(this).find("td").eq(14).text();
     if(absText.includes("Abs")){
       const abs=parseInt(absText);
@@ -300,6 +302,63 @@ $("#highlightBtn").click(function(){
   });
 });
 $("#resetBtn").click(function(){ $("#attendanceTable tr").removeAttr("style").removeClass("good warning bad"); });
+
+
+// ===================================
+// --- NEW - EXERCISE 7 - CODE ---
+// ===================================
+
+// 1. Filter by Name (*** THIS IS THE FIXED CODE ***)
+$("#searchInput").on("keyup", function() {
+  let value = $(this).val().toLowerCase();
+  $("#attendanceTable tbody tr").filter(function() {
+    let lastName = $(this).find("td:eq(0)").text().toLowerCase();
+    let firstName = $(this).find("td:eq(1)").text().toLowerCase();
+    
+    // Show row if last name, first name, or "first last" STARTS WITH the value
+    $(this).toggle(
+      lastName.startsWith(value) || 
+      firstName.startsWith(value) ||
+      (firstName + " " + lastName).startsWith(value)
+    );
+  });
+});
+
+// 2. Sort Buttons
+$("#sortAbsence").click(function() {
+  evaluateAttendance(); 
+  sortTable(14, 'asc'); 
+  $("#sortStatus").text("Currently sorted by absences (ascending).");
+});
+
+$("#sortParticipation").click(function() {
+  evaluateAttendance(); 
+  sortTable(15, 'desc'); 
+  $("#sortStatus").text("Currently sorted by participation (descending).");
+});
+
+// 3. Helper function to sort the table
+function sortTable(columnIndex, order) {
+  let tbody = $("#attendanceTable tbody");
+  let rows = tbody.find("tr").toArray(); 
+
+  rows.sort(function(a, b) {
+    let aValText = $(a).find("td").eq(columnIndex).text();
+    let bValText = $(b).find("td").eq(columnIndex).text();
+    
+    let aVal = parseInt(aValText) || 0;
+    let bVal = parseInt(bValText) || 0;
+    
+    if (order === 'asc') {
+      return aVal - bVal;
+    } else {
+      return bVal - aVal; 
+    }
+  });
+
+  tbody.empty().append(rows);
+}
+
 </script>
 </body>
 </html>
