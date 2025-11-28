@@ -1,78 +1,76 @@
 <?php
-// Step 1: Collect and sanitize data
-$student_id = isset($_POST['student_id']) ? trim($_POST['student_id']) : '';
-$name       = isset($_POST['name']) ? trim($_POST['name']) : '';
-$group      = isset($_POST['group']) ? trim($_POST['group']) : '';
+// add_student.php - With Level Selection
+require_once 'db_connect.php';
+session_start();
+// Security Check (Admin Only)
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') { header("Location: login.php"); exit; }
 
-$student_id = htmlspecialchars($student_id);
-$name       = htmlspecialchars($name);
-$group      = htmlspecialchars($group);
+$message = "";
+$error = "";
 
-// Step 2: Validate fields
-$errors = [];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $matricule = $_POST['matricule'];
+    $fullname = $_POST['name'];
+    $level = $_POST['level']; // NEW
+    $group = $_POST['group'];
 
-if ($student_id === "") {
-    $errors[] = "Student ID is required.";
-} elseif (!ctype_digit($student_id)) {
-    $errors[] = "Student ID must contain numbers only.";
-}
+    $pdo = getDatabaseConnection();
+    try {
+        $pdo->beginTransaction();
 
-if ($name === "") {
-    $errors[] = "Name is required.";
-} elseif (!preg_match("/^[A-Za-z ]+$/", $name)) {
-    $errors[] = "Name must contain letters only.";
-}
+        // 1. Insert Student (With Level)
+        $stmt = $pdo->prepare("INSERT INTO students (matricule, fullname, level, group_id) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$matricule, $fullname, $level, $group]);
+        $sid = $pdo->lastInsertId();
 
-if ($group === "") {
-    $errors[] = "Group is required.";
-} elseif (!preg_match("/^[A-Za-z0-9]+$/", $group)) {
-    $errors[] = "Group must contain letters and numbers only.";
-}
+        // 2. Create Login
+        $hash = password_hash($matricule, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("INSERT INTO users (username, password, role, related_id) VALUES (?, ?, 'student', ?)");
+        $stmt->execute([$matricule, $hash, $sid]);
 
-// Step 3: Load existing students
-$students = [];
-
-if (file_exists("students.json")) {
-    $json = file_get_contents("students.json");
-    $students = json_decode($json, true);
-
-    if (!is_array($students)) {
-        $students = [];
+        $pdo->commit();
+        $message = "Student added to $level - Group $group!";
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        $error = "Error: " . $e->getMessage();
     }
 }
-
-// Step 4: Check for duplicate Student ID
-foreach ($students as $stu) {
-    if ($stu["student_id"] == $student_id) {
-        $errors[] = "Student ID already exists.";
-        break;
-    }
-}
-
-// Step 5: If errors, show them
-if (!empty($errors)) {
-    echo "<h2 style='color:red;'>Errors:</h2>";
-    foreach ($errors as $e) {
-        echo "<p style='color:red;'>$e</p>";
-    }
-    echo "<p><a href='TP2.php'>Go back</a></p>";
-    exit;
-}
-
-// Step 6: Add new student
-$students[] = [
-    "student_id" => $student_id,
-    "name"       => $name,
-    "group"      => $group
-];
-
-// Step 7: Save to JSON
-file_put_contents("students.json", json_encode($students, JSON_PRETTY_PRINT));
-
-// Step 8: Success message
-echo "<h2 style='color:green;'>Student added successfully!</h2>";
-echo "<p><strong>ID:</strong> $student_id</p>";
-echo "<p><strong>Name:</strong> $name</p>";
-echo "<p><strong>Group:</strong> $group</p>";
-echo "<p><a href='TP2.php'>Add another student</a></p>";
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Student</title>
+    <style>body{font-family:sans-serif; padding:20px; background:#f4f4f4;} .card{background:white; padding:30px; border-radius:10px; max-width:400px; margin:auto; box-shadow:0 4px 10px rgba(0,0,0,0.1);}</style>
+</head>
+<body>
+    <div class="card">
+        <h2>Add New Student</h2>
+        <?php if ($message) echo "<p style='color:green'>$message</p>"; ?>
+        <?php if ($error) echo "<p style='color:red'>$error</p>"; ?>
+
+        <form method="POST">
+            <label>Matricule:</label><br>
+            <input type="text" name="matricule" required style="width:100%; padding:8px; margin-bottom:10px;">
+            
+            <label>Full Name:</label><br>
+            <input type="text" name="name" required style="width:100%; padding:8px; margin-bottom:10px;">
+            
+            <label>Academic Year (Level):</label><br>
+            <select name="level" style="width:100%; padding:8px; margin-bottom:10px;">
+                <option value="L1">Licence 1 (L1)</option>
+                <option value="L2">Licence 2 (L2)</option>
+                <option value="L3">Licence 3 (L3)</option>
+                <option value="M1">Master 1 (M1)</option>
+                <option value="M2">Master 2 (M2)</option>
+            </select>
+
+            <label>Group Number:</label><br>
+            <input type="number" name="group" required style="width:100%; padding:8px; margin-bottom:10px;">
+
+            <button type="submit" style="padding:10px; width:100%; background:#007bff; color:white; border:none; cursor:pointer;">Create Student</button>
+        </form>
+        <br><a href="admin_home.php">Back to Dashboard</a>
+    </div>
+</body>
+</html>

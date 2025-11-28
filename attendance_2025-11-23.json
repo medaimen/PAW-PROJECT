@@ -1,0 +1,14 @@
+[
+    {
+        "student_id": 202331337210,
+        "status": "present"
+    },
+    {
+        "student_id": 202331337211,
+        "status": "present"
+    },
+    {
+        "student_id": 202331337215,
+        "status": "absent"
+    }
+]
