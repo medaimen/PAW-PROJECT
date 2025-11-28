@@ -91,6 +91,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['proof'])) {
         .msg { padding: 15px; border-radius: 5px; margin-bottom: 20px; }
         .green { background: #d4edda; color: #155724; }
         .red { background: #f8d7da; color: #721c24; }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            body { padding: 20px; }
+            .container { padding: 20px; max-width: 100%; }
+            h1 { font-size: 1.5em; }
+            table { font-size: 14px; overflow-x: auto; display: block; white-space: nowrap; }
+            th, td { padding: 10px 8px; min-width: 100px; }
+            .btn-upload { padding: 6px 10px; font-size: 12px; }
+            .btn-delete { font-size: 12px; }
+            input[type="file"] { width: 150px; font-size: 12px; }
+        }
     </style>
 </head>
 <body>

@@ -107,6 +107,21 @@ th { background:#f8f9fa; color:#555; font-weight: 600; }
 /* Form Inputs */
 input, select { padding: 10px; border: 1px solid #ddd; border-radius: 4px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
 label { font-weight: bold; color: #555; font-size: 0.9em; }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    nav { padding: 10px; flex-direction: column; gap: 10px; }
+    .nav-links { flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .logout-btn { align-self: center; }
+    section { padding: 15px; }
+    .card { padding: 15px; }
+    table { font-size: 14px; }
+    th, td { padding: 8px 10px; }
+    .step { flex-direction: column; gap: 10px; }
+    .step-num { align-self: flex-start; }
+    /* Stack grid in sessions section */
+    #sessions > div:first-child { grid-template-columns: 1fr; gap: 15px; }
+}
 </style>
 </head>
 <body>

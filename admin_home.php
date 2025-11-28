@@ -77,6 +77,17 @@ if (isset($_POST['import_students']) && isset($_FILES['csv_file'])) {
         label { display: block; margin-top: 10px; font-weight: bold; }
         input[type="text"] { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
         .success-msg { background: #d4edda; color: #155724; padding: 15px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #c3e6cb; }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: static; padding: 10px; }
+            .content { margin-left: 0; padding: 20px; }
+            .card { margin-bottom: 15px; }
+            button { width: 100%; margin-bottom: 10px; }
+            input[type="file"] { margin-bottom: 15px; }
+            .sidebar h2 { margin-top: 0; }
+            .sidebar p { margin-bottom: 10px; }
+        }
     </style>
 </head>
 <body>
